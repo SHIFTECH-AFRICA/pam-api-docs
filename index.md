@@ -1,7 +1,7 @@
 ## [PAM](https://pam.easyncpay.com/) API DOCS
 * Welcome to [PAM](https://pam.easyncpay.com/) API,this api is organized around REST API. Our API has predictable resource-oriented URLs, accepts json/form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs that is GET and POST. You can invoke our API endpoints using REST clients like Postman or SoapUI and command line tools like curl and Node.js.
 
-* The [SMSALES](https://pam.easyncpay.com/) API only accepts the Content-Type: application/json & Accept: application/json
+* The [PAM](https://pam.easyncpay.com/) API only accepts the Content-Type: application/json & Accept: application/json
 
 ### How To Get Started
 * To make an API call, you will need to authenticate your app. We have provided an OAuth API for you to generate an access token, we support Authorization grant type. To authorize your API call to the OAuth API, you will need a Basic Auth over HTTPS authorization token.
@@ -9,85 +9,124 @@
 #### Generating Access Token <span style="color:green"><kbd>GET</kbd></span>
 
 ```markdown
-   https://api.smsales.co.ke/api/v1/token 
+  https://pam.api.easyncpay.com/api/v1/token
 ```
 
 ```json
 var request = require('request');
 var options = {
-'method': 'GET',
-'url': 'https://api.smsales.co.ke/api/v1/token',
-    'headers': {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Basic ACCOUNT_API_TOKEN'
-    }
-}
+   'method': 'GET',
+   'url': 'https://pam.api.easyncpay.com/api/v1/token',
+   'headers': {
+       'Content-Type': 'application/json',
+       'Accept': 'application/json',
+       'Authorization': 'Basic ACCOUNT_API_TOKEN'
+             }
+       };
+request(options, function (error, response) {
+if (error) throw new Error(error);
+   console.log(response.body);
+});
 ```
 ```json
 {
-  "data": {
-    "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYXBpLnNtc2FsZXMuY28ua2VcL2FwaVwvdjFcL3Rva2VuIiwiaWF0IjoxNjIxOTY1OTk5LCJleHAiOjE2MjE5Njk1OTksIm5iZiI6MTYyMTk2NTk5OSwianRpIjoiNUlvc3NjdlRqZDU3bVdLcyIsInN1YiI6IjhiNWE5ZmEwLTM3ODYtNDRhOS05NmEwLWVlMTlmOTU2NDVjZiIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.mioHmrN-KJb8_rJd9FayfhBGI6G8Kg6g9nNg8c4GxjM",
-    "TokenType": "Bearer",
-    "Expires": 3600
-  }
+    "data": {
+        "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcGFtLmFwaS5lYXN5bmNwYXkuY29tXC9hcGlcL3YxXC90b2tlbiIsImlhdCI6MTYxNDU5NTI4MywiZXhwIjoxNjE0NTk4ODgzLCJuYmYiOjE2MTQ1OTUyODMsImp0aSI6IkYzVmpQNDJQb1ZjU0YycjIiLCJzdWIiOiI4OTczODllMy01ZjdjLTRhYjAtYjI2OS01YjFmNmI3NTM2NGEiLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.KWJbcAoIW6yF0IgCaylv7EqotDZnkXt5MvmuEZrjNbA",
+        "TokenType": "Bearer",
+        "Expires": 3600
+    },
+    "success": true
 }
 ```
 
 For more details see [Account Api Token](https://smsales.co.ke/profile).
 
-#### Fetching Latest Sent Sms's <span style="color:green"><kbd>GET</kbd></span>
+#### listing your linked Paybill/Till numbers <span style="color:green"><kbd>GET</kbd></span>
 ```markdown
-   https://api.smsales.co.ke/api/v1/sms
+   https://pam.api.easyncpay.com/api/v1/shortcode
 ```
 
 ```json
 var request = require('request');
 var options = {
-'method': 'GET',
-'url': 'https://api.smsales.co.ke/api/v1/sms',
-    'headers': {
-    'Content-Type': 'application/json',
+  'method': 'GET',
+  'url': 'https://pam.api.easyncpay.com/api/v1/shortcode',
+  'headers': {
     'Accept': 'application/json',
-    'Authorization': 'Bearer GIVE_THE_GENERATED_BEARER_TOKEN'
-    }
-}
+    'Content-Type': 'application/json'
+  }
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
 ```
-#### Sending Bulk Sms <span style="color:red"><kbd>POST</kbd></span>
+#### Listing all your apps <span style="color:red"><kbd>Get</kbd></span>
 ```markdown
-   https://api.smsales.co.ke/api/v1/sms/send
+   https://pam.api.easyncpay.com/api/v1/app
 ```
 *Params*
 ```json
-{
-  "api_sender" => "shiftech",// required check on your senderID's list for the API Sender
-  "message" => "Hello Smsales.",// required
-  "phone_numbers" => ["2547XXXXXXXX","2540XXXXXXXX","2547XXXXXXXX"],// required
-  "scheduled_at" => "Y-m-d H:i:s", // optional
-  "callback_url"=> "https://yourdomain/report"// optional this should be a POST request
-}
+var request = require('request');
+var options = {
+  'method': 'GET',
+  'url': 'https://pam.api.easyncpay.com/api/v1/app',
+  'headers': {
+    'Accept': 'application/json'
+  }
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+```
+#### Listing all your  latest transaction <span style="color:red"><kbd>Get</kbd></span>
+```markdown
+    https://pam.api.easyncpay.com/api/v1/pay-loads
 ```
 
 ```json
 var request = require('request');
 var options = {
-'method': 'GET',
-'url': 'https://api.smsales.co.ke/api/v1/sms/send',
-    'headers': {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer GIVE_THE_GENERATED_BEARER_TOKEN'
-    },
-body: JSON.stringify({"api_sender":"shiftech","message":"Hello","phone_numbers":["2547XXXXXXXX","2540XXXXXXXX","2547XXXXXXXX"]})
+  'method': 'GET',
+  'url': 'https://pam.api.easyncpay.com/api/v1/pay-loads',
+  'headers': {
+    'Accept': 'application/json'
+  }
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+```
 
-}
+### Validating Paybill/Till Number
+<p>Provide all the valid information to check if the paybill/till number credentials are valid.</p><span style="color:green"><kbd>POST</kbd></span>
+
+```markdown
+  https://pam.api.easyncpay.com/api/v1/m-pesa/shortcode validate
+```
+##
+
+```
+
 ```
 ```json
-{
-  "data": {
-    "message": "Accepted for dispatch..."
-  }
-}
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/shortcode/validate',
+  'headers': {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"ConsumerKey":"","ConsumerSecret":"","Environment":"sandbox/production"})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
 ```
 CallBack Results *if provided*.
 
