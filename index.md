@@ -28,6 +28,7 @@ if (error) throw new Error(error);
    console.log(response.body);
 });
 ```
+#### Expected response:
 ```json
 {
     "data": {
@@ -38,8 +39,6 @@ if (error) throw new Error(error);
     "success": true
 }
 ```
-
-For more details see [Account Api Token](https://smsales.co.ke/profile).
 
 #### listing your linked Paybill/Till numbers <span style="color:green"><kbd>GET</kbd></span>
 ```markdown
@@ -61,11 +60,11 @@ request(options, function (error, response) {
   console.log(response.body);
 });
 ```
-#### Listing all your apps <span style="color:red"><kbd>Get</kbd></span>
+#### Listing all your apps <span style="color:red"><kbd>Get </kbd></span>
 ```markdown
    https://pam.api.easyncpay.com/api/v1/app
 ```
-*Params*
+
 ```json
 var request = require('request');
 var options = {
@@ -106,11 +105,7 @@ request(options, function (error, response) {
 ```markdown
   https://pam.api.easyncpay.com/api/v1/m-pesa/shortcode validate
 ```
-##
-
-```
-
-```
+*Params*
 ```json
 var request = require('request');
 var options = {
@@ -128,22 +123,162 @@ request(options, function (error, response) {
   console.log(response.body);
 });
 ```
-CallBack Results *if provided*.
+### expected response  *if the  Paybill/Till Number credentials are valid*
+
+```
+{
+    "data": {
+        "Message": "The m-pesa app keys are valid."
+    },
+    "success": true
+}
+```
+### Register C2B callback <span style="color:RED"><kbd>POST</kbd></span>
+
+```markdown
+  https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/register-url
+
+```
 
 ```json
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/register-url',
+  'headers': {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({"Secret":""})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+
+```
+expected  response
+
+```
 {
-  "sent": true,
-  "sender": "SHIFTECH", // Youe senderID
-  "api_sender": "shiftech", // Your api sender
-  "phone_number": "254XXXXXXXX",
-  "batch": "1KTHKGKM8R",
-  "account": {
-    "sender_balance": 7000,
-    "sms_balance": 13200
-  }
+    "data": {
+        "Message": "Validation and Confirmation URLs are already registered"
+    },
+    "success": true
+}
+```
+## STK PUSH 
+<p>This section shows how to make stk push and callback data for both stk-push and lipa na mpesa.</p>
+
+```markdown
+https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/stk-push
+
+```
+```json
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/stk-push',
+  'headers': {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"CallingCode":"254","Secret":"","PhoneNumber":"","Amount":"1","ResultUrl":"","Description":"Testing the PAM API","TransactionType":"CustomerPayBillOnline/CustomerBuyGoodsOnline"})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+```
+#### STK paid expected  response
+
+```json
+
+"data": {
+      "Success": true,
+      "Description": "Transaction description.",
+      "ReferenceNumber": "2BONOSBBTN",
+      "PhoneNumber": "254XXXXXXXXX",
+      "MpesaReceiptNumber": "PBO2ZOBY44",
+      "Amount": 20000
+}
+```
+### Expected response for a paid C2B
+
+```json
+"data": {
+        "Success": true,
+        "Description": "Transaction description.",
+        "ReferenceNumber": "2BONOSBBTN",
+        "PhoneNumber": "254XXXXXXXXX",
+        "MpesaReceiptNumber": "PBO2ZOBY44",
+        "Amount": 20000,
+        'TransactionType': 'Pay Bill'
+        'OrgAccountBalance': 50000
+}
+```
+####  Expected response for a not paid STK
+```json
+"data": {
+        "Success": false,
+        "Description": "Request cancelled by user",
+        "ReferenceNumber": "2BOXRDNMLU",
+        "PhoneNumber": "254XXXXXXXXX"
+}
+
+```
+### B2C <span> ( *business to customer* )</span><span style="color:RED"><kbd>POST</kbd></span> 
+<p>This is where all the bulk payments are made.</p>
+
+```markdown
+https://pam.api.easyncpay.com/api/v1/m-pesa/b2c
+```
+```json
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/b2c',
+  'headers': {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({"CallingCode":"254","Secret":"","PhoneNumber":"","Amount":"10","ResultUrl":"","Description":"Testing the PAM API","TransactionType":"BusinessPayment/SalaryPayment/PromotionPayment"})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+```
+### Response for payment recieved through B2C  
+```json
+
+"data": {
+       'Success' => true,
+       'Description' => 'Salary payment',
+       'ReferenceNumber' => '2BO6BCTLYF',
+       'PhoneNumber' => '254XXXXXXXXX',
+       'MpesaReceiptNumber' => 'PBO2ZOBY44',
+       'Amount' => 50000,
+       'B2CUtilityAccountAvailableFunds' => 70000,
+       'B2CWorkingAccountAvailableFunds' => 70000,
+       'B2CChargesPaidAccountAvailableFunds' => 70000
+    }
+```
+### payment not received from B2C
+
+```json
+"data": {
+       "Success": false,
+        "Description": "The initiator information is invalid.",
+        "ReferenceNumber": "2BO6BCTLYF",
+        "PhoneNumber": "254XXXXXXXXX"
 }
 ```
 
-## Support or Contact
+## API libraries
 
-Having trouble with API integration? Check out our [libraries](https://github.com/SHIFTECH-AFRICA/smsales-php-sdk) or [contact support](https://wa.me/message/UW2M6CP2ACOAF1) and we’ll help you sort it out.
+Having trouble with API integration?. Check out our  [libraries](https://github.com/SHIFTECH-AFRICA/pam-php-sdk) for  a quick intergration, or [contact support](https://wa.me/message/UW2M6CP2ACOAF1) and we’ll help you sort it out.
+ 
