@@ -229,6 +229,54 @@ request(options, function (error, response) {
 }
 
 ```
+### confirming stk payment<span style="color:green"><kbd>POST</kbd></span>
+```markdown
+  https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/confirm-stk-payment
+
+```
+
+```json
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/c2b/confirm-stk-payment',
+  'headers': {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({"Secret":"", "ReferenceNumber":"", "ResultUrl":"",})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+
+```
+#### Expected response if the payment has been done
+```json
+
+"data": {
+      "Success": true,
+      "Description": "Transaction description.",
+      "ReferenceNumber": "2BONOSBBTN",
+      "PhoneNumber": "254XXXXXXXXX",
+      "MpesaReceiptNumber": "PBO2ZOBY44",
+      "Amount": 20000
+}
+```
+#### Expected response if the payment has not been done
+
+```json
+"data": {
+        "Success": false,
+        "Description": "Request cancelled by user",
+        "ReferenceNumber": "2BOXRDNMLU",
+        "PhoneNumber": "254XXXXXXXXX"
+}
+
+```
+
 ### B2C <span> ( *business to customer* )</span><span style="color:RED"><kbd>POST</kbd></span> 
 <p>This is where all the bulk payments are made.</p>
 
@@ -267,8 +315,58 @@ request(options, function (error, response) {
        'B2CChargesPaidAccountAvailableFunds' => 70000
     }
 ```
-### payment not received from B2C
+### payment not received from B2C 
 
+```json
+"data": {
+       "Success": false,
+        "Description": "The initiator information is invalid.",
+        "ReferenceNumber": "2BO6BCTLYF",
+        "PhoneNumber": "254XXXXXXXXX"
+}
+```
+### confirming B2C payment
+confirming stk payment<span style="color:green"><kbd>POST</kbd></span>
+```markdown
+  https://pam.api.easyncpay.com/api/v1/m-pesa/b2c/confirm-withdraw
+
+```
+
+```json
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://pam.api.easyncpay.com/api/v1/m-pesa/b2c/confirm-withdraw',
+  'headers': {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({"Secret":"", "ReferenceNumber":"", "ResultUrl":"",})
+
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+
+```
+#### Expected response if the payment has been made
+
+```json
+
+"data": {
+       'Success' => true,
+       'Description' => 'Salary payment',
+       'ReferenceNumber' => '2BO6BCTLYF',
+       'PhoneNumber' => '254XXXXXXXXX',
+       'MpesaReceiptNumber' => 'PBO2ZOBY44',
+       'Amount' => 50000,
+       'B2CUtilityAccountAvailableFunds' => 70000,
+       'B2CWorkingAccountAvailableFunds' => 70000,
+       'B2CChargesPaidAccountAvailableFunds' => 70000
+    }
+```
+##### Expected response if the payment has not been made
 ```json
 "data": {
        "Success": false,
